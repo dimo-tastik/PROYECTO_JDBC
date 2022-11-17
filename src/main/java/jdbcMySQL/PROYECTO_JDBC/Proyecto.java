@@ -4,13 +4,13 @@ import java.time.LocalDate;
 
 public class Proyecto {
 	
-	private Integer num_proy;
+	private long num_proy;
 	private String nombre;
 	private String dni_nif_jefe_proy;
 	private LocalDate f_inicio;
 	private LocalDate f_fin;
 	
-	public Proyecto(Integer num_proy, String nombre, String dni_nif_jefe_proy, LocalDate f_inicio, LocalDate f_fin) {
+	public Proyecto(long num_proy, String nombre, String dni_nif_jefe_proy, LocalDate f_inicio, LocalDate f_fin) {
 		super();
 		setNum_proy(num_proy);
 		setNombre(nombre);
@@ -19,22 +19,14 @@ public class Proyecto {
 		setF_fin(f_fin);
 	}
 
-	public Proyecto() {
-		super();
-		setNum_proy(null);
-		setNombre(null);
-		setDni_nif_jefe_proy(null);
-		setF_inicio(LocalDate.now());
-		setF_fin(null);
-	}
 
-	public Integer getNum_proy() {
+	public long getNum_proy() {
 		return num_proy;
 	}
 
-	public void setNum_proy(Integer num_proy) {
-		if (num_proy == null) {
-			//
+	public void setNum_proy(long num_proy) {
+		if (num_proy == 0) {
+			throw new ProyectoException(num_proy);
 		}else {
 			this.num_proy = num_proy;
 		}
@@ -45,7 +37,11 @@ public class Proyecto {
 	}
 
 	public void setNombre(String nombre) {
-		this.nombre = nombre;
+		if (nombre == null || nombre.isBlank() || nombre.length() > 32) {
+			throw new ProyectoException(nombre);
+		}else {
+			this.nombre = nombre;
+		}
 	}
 
 	public String getDni_nif_jefe_proy() {
@@ -53,7 +49,11 @@ public class Proyecto {
 	}
 
 	public void setDni_nif_jefe_proy(String dni_nif_jefe_proy) {
-		this.dni_nif_jefe_proy = dni_nif_jefe_proy;
+		if (dni_nif_jefe_proy == null || dni_nif_jefe_proy.isBlank() || dni_nif_jefe_proy.length() > 9) {
+			throw new ProyectoException(dni_nif_jefe_proy);
+		}else {
+			this.dni_nif_jefe_proy = dni_nif_jefe_proy;
+		}
 	}
 
 	public LocalDate getF_inicio() {
@@ -61,6 +61,9 @@ public class Proyecto {
 	}
 
 	public void setF_inicio(LocalDate f_inicio) {
+		if (f_inicio == null) {
+			f_inicio = f_inicio.now();
+		}
 		this.f_inicio = f_inicio;
 	}
 
