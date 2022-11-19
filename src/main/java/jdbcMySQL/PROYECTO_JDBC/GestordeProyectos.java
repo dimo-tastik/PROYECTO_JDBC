@@ -16,10 +16,11 @@ import java.time.LocalDate;
 
 public class GestordeProyectos {
 
+	static Connection c = DBC.getConexion();
+
 	public static boolean NuevoEmpleado(String dni_nif, String nombre) throws EmpleadoException, SQLException {
 		boolean se_creo_correctamente;
 		String insert = "INSERT INTO empleados VALUES (?, ?);";
-		Connection c = DBC.getConexion();
 
 		PreparedStatement ps = c.prepareStatement(insert);
 
@@ -40,7 +41,6 @@ public class GestordeProyectos {
 		ps.executeUpdate();
 
 		ps.close();
-		c.close();
 
 		se_creo_correctamente = true;
 		return se_creo_correctamente;
@@ -50,7 +50,6 @@ public class GestordeProyectos {
 			LocalDate f_fin) throws ProyectoException, SQLException {
 		long n = num_proy;
 		String insert = "INSERT INTO proyectos VALUES (?, ?, ?, ?, ?);";
-		Connection c = DBC.getConexion();
 
 		PreparedStatement ps = c.prepareStatement(insert);
 
@@ -80,7 +79,6 @@ public class GestordeProyectos {
 		ps.executeUpdate();
 
 		ps.close();
-		c.close();
 
 		return n;
 	}
@@ -88,7 +86,6 @@ public class GestordeProyectos {
 	public static void asignaEmpAProyecto(String dni_nif_emp, long num_proy, LocalDate f_inicio, LocalDate f_fin)
 			throws SQLException {
 		String insert = "INSERT INTO asig_proyectos VALUES (?, ?, ?, ?);";
-		Connection c = DBC.getConexion();
 
 		PreparedStatement ps = c.prepareStatement(insert);
 
@@ -107,37 +104,40 @@ public class GestordeProyectos {
 		ps.executeUpdate();
 
 		ps.close();
-		c.close();
 
 	}
 
 	public static void getMetaDatosTablas() throws SQLException {
-		String queryEmpleados = "SELECT * FROM empleados;";
-		String queryProyectos = "SELECT * FROM proyectos;";
-		String queryAsig_proyectos = "SELECT * FROM asig_proyectos;";
-
-		Connection c = DBC.getConexion();
+		String tabla1 = "SELECT * FROM empleados;";
+		String tabla2 = "SELECT * FROM proyectos;";
+		String tabla3 = "SELECT * FROM asig_proyectos;";
 
 		Statement st = c.createStatement();
-		
-		ResultSet rs1 = st.executeQuery(queryEmpleados);
+
+		ResultSet rs1 = st.executeQuery(tabla1);
 		ResultSetMetaData rsmd1 = rs1.getMetaData();
-		System.out.println(rsmd1);
-		
-		ResultSet rs2 = st.executeQuery(queryProyectos);
+		while (rs1.next()) {
+			for (int i = 1; i <= rsmd1.getColumnCount(); i++) {
+				System.out.print(rsmd1.getColumnName(i) + " ");
+			}
+			System.out.println("\n"+rs1.getObject(1) + " " + rs1.getObject(2));
+		}
+
+		ResultSet rs2 = st.executeQuery(tabla2);
 		ResultSetMetaData rsmd2 = rs2.getMetaData();
 		System.out.println(rsmd2);
-		
-		ResultSet rs3 = st.executeQuery(queryAsig_proyectos);
+		System.out.println();
+
+		ResultSet rs3 = st.executeQuery(tabla3);
 		ResultSetMetaData rsmd3 = rs3.getMetaData();
 		System.out.println(rsmd3);
-		
+		System.out.println();
+
 		rs3.close();
 		rs2.close();
 		rs1.close();
 		st.close();
-		c.close();
-		
+
 	}
 
 }
